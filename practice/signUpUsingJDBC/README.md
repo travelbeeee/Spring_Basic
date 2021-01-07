@@ -4,7 +4,9 @@
 
 로그인, 회원가입 구현 완료
 
-  ![20210107_134554](https://user-images.githubusercontent.com/59816811/103852189-b986f480-50ee-11eb-994d-635af03aeae3.png)
+  <img src="https://user-images.githubusercontent.com/59816811/103852189-b986f480-50ee-11eb-994d-635af03aeae3.png" alt="20210107_134554" style="zoom:130%;" />
+
+<img src="https://user-images.githubusercontent.com/59816811/103861750-4470ea80-5101-11eb-9d03-b3ecfc9b2b46.png" alt="20210107_155842" style="zoom:80%; align:left;"/>
 
 **추가해야 되는 기능**
 
