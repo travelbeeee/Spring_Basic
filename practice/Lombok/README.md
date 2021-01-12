@@ -49,7 +49,7 @@ public class Member {
 
 @Data 어노테이션을 Member 객체에 추가하면 다음과 같이 메소드들이 자동으로 생긴다.
 
-<img src="https://user-images.githubusercontent.com/59816811/103989272-cda42200-51d2-11eb-8759-c8d298b88d16.png" alt="20210108_165829" align=left />
+<img src="https://user-images.githubusercontent.com/59816811/103989272-cda42200-51d2-11eb-8759-c8d298b88d16.png" alt="20210108_165829"/>
 
 <br>
 
@@ -79,7 +79,7 @@ public class Member {
 
 toString 메소드는 Object 클래스에 있는 메소드로 객체가 가지고 있는 정보나 값들을 문자열로 만들어 리턴하는 메소드입니다. 
 
-<img src="https://user-images.githubusercontent.com/59816811/103990604-dac21080-51d4-11eb-9c43-184443f07b0b.png" alt="20210108_171007" align=left style="zoom:120%;" />
+<img src="https://user-images.githubusercontent.com/59816811/103990604-dac21080-51d4-11eb-9c43-184443f07b0b.png" alt="20210108_171007" />
 
  <br>
 
@@ -112,7 +112,7 @@ public class Member {
 }
 ```
 
-<img src="https://user-images.githubusercontent.com/59816811/103990606-dbf33d80-51d4-11eb-9936-e78408e67967.png" alt="20210108_171320" align=left style="zoom:120%;" />
+<img src="https://user-images.githubusercontent.com/59816811/103990606-dbf33d80-51d4-11eb-9936-e78408e67967.png" alt="20210108_171320" />
 
 <br>
 
@@ -135,7 +135,7 @@ public class Member {
 
 ```
 
-<img src="https://user-images.githubusercontent.com/59816811/103990612-dd246a80-51d4-11eb-9c21-5cdfa57b3700.png" alt="20210108_170404" align=left style="zoom:120%;" />
+<img src="https://user-images.githubusercontent.com/59816811/103990612-dd246a80-51d4-11eb-9c21-5cdfa57b3700.png" alt="20210108_170404"  />
 
 <br>
 
@@ -158,7 +158,7 @@ public class Member {
 
 ```
 
-<img src="https://user-images.githubusercontent.com/59816811/103990609-dc8bd400-51d4-11eb-8a1e-9419c4bbf56b.png" alt="20210108_170314" align=left style="zoom:120%;" />
+<img src="https://user-images.githubusercontent.com/59816811/103990609-dc8bd400-51d4-11eb-8a1e-9419c4bbf56b.png" alt="20210108_170314"  />
 
 <br>
 
@@ -179,4 +179,4 @@ public class Member {
 
 ```
 
-<img src="https://user-images.githubusercontent.com/59816811/103990608-dbf33d80-51d4-11eb-821e-c1b25b8fd0c6.png" alt="20210108_170212" align=left style="zoom:120%;" />
+<img src="https://user-images.githubusercontent.com/59816811/103990608-dbf33d80-51d4-11eb-821e-c1b25b8fd0c6.png" alt="20210108_170212"/>
