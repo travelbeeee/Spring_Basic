@@ -126,19 +126,27 @@ private  MemberRepository memberRepository = new JDBCMemberRepository();
 
 **하지만, 큰 문제가 남아있다. 구현 객체를 변경하려면 클라이언트인 MemberService 안의 코드를 변경해야한다. 따라서, OCP 원칙에 위배되고 MemberService 클라이언트가 직접 구현 클래스를 선택하므로 DIP 원칙에 위배된다.** 
 
+<img src="https://user-images.githubusercontent.com/59816811/104392941-95139800-5586-11eb-9996-f7d06112a02f.png" alt="spring_whatisIOC"  />
+
+위의 그림과 같은 상황인거다. 내가 원한건 MemberService 가 Interface(역할) 인 MemberRepository 에 의존한다고 생각했는데 실제로는 Class(구현 객체)를 의존하고 있는 상황이다. 
+
 **--> 역할 / 구현 구분 만으로는 좋은 객체 지향 프로그래밍이 불가능...!!!**
+
+**--> Interface 에 의존하게 만들고 실제 구현 객체는 외부에서 삽입해주자!**
+
+```java
+private MemberRepository memberRepository
+```
+
+**--> IoC 등장**
 
 <br>
 
 ### 5) IoC 
 
-**클라이언트가 직접 객체를 생성하는게 아니라, 객체의 생성 방법을 결정하고 그렇게 만들어진 객체를 돌려주는 일을 하는 오브젝트를 따로 만들자.**
+**클라이언트가 직접 객체를 생성하는게 아니라, 객체의 생성 방법을 결정하고 그렇게 만들어진 객체를 돌려주는 일을 하는 오브젝트를 따로 만들어서 클라이언트가 자신이 사용할 오브젝트를 스스로 선택하지 않고, 생성하지도 않는다. 즉, 모든 제어 권한을 자신이 아닌 다른 대상에게 위임한다.**
 
-**--> 따라서 클라이언트가 자신이 사용할 오브젝트를 스스로 선택하지 않고, 생성하지도 않는다.**
-
-**--> 모든 제어 권한을 자신이 아닌 다른 대상에게 위임한다.**
-
-**--> IoC ( Inversion Of Control )** 
+####  **IoC ( Inversion Of Control )** 
 
 **위와 같은 일을 하는 오브젝트를 스프링에서는 팩토리 (factory) 라고 부르고 팩토리가 제어권을 가지고 만들고 관계를 부여하는 오브젝트를 빈(bean) 이라고 부른다.  다른 말로는 빈 팩토리(bean factory) 또는 IoC 컨테이너라고 부른다. 또한, 객체를 외부로부터 주입해주는 작업을 스프링에서는 DI (Dependency Injection ) 이라 부른다.**
 
