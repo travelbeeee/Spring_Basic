@@ -1,4 +1,4 @@
-## IoC ( Inversion of Control ) , DI ( Dependency Injection) 
+# IoC ( Inversion of Control ) 
 
 좋은 객체 지향 프로그래밍을 하기 위해서는 IoC 기술이 필요하고, 이 기술을 Spring 에서는 DI ( Dependency Injection ) 이라는 이름으로 지원해주고 있다. 
 
@@ -135,10 +135,9 @@ private  MemberRepository memberRepository = new JDBCMemberRepository();
 **--> Interface 에 의존하게 만들고 실제 구현 객체는 외부에서 삽입해주자!**
 
 ```java
-private MemberRepository memberRepository
+// 어떤 memberRepository 를 사용할지는 클라이언트가 결정 X
+private MemberRepository memberRepository;
 ```
-
-**--> IoC 등장**
 
 <br>
 
@@ -148,7 +147,9 @@ private MemberRepository memberRepository
 
 ####  **IoC ( Inversion Of Control )** 
 
-**위와 같은 일을 하는 오브젝트를 스프링에서는 팩토리 (factory) 라고 부르고 팩토리가 제어권을 가지고 만들고 관계를 부여하는 오브젝트를 빈(bean) 이라고 부른다.  다른 말로는 빈 팩토리(bean factory) 또는 IoC 컨테이너라고 부른다. 또한, 객체를 외부로부터 주입해주는 작업을 스프링에서는 DI (Dependency Injection ) 이라 부른다.**
+**다른 의미로 객체를 외부로부터 주입받는다고 해서 스프링에서는 DI (Dependency Injection) 이라고 부른다.**
+
+**위와 같은 일을 하는 오브젝트를 스프링에서는 팩토리 (factory) 라고 부르고 팩토리가 제어권을 가지고 만들고 관계를 부여하는 오브젝트를 빈(bean) 이라고 부른다.  다른 말로는 빈 팩토리(bean factory) 또는 IoC 컨테이너 또는 DI 컨테이너라고 부른다.**
 
 **스프링 프레임워크에서 DI 를 지원해주기 때문에 우리는 좋은 객체 지향 프로그래밍이 가능하다.**
 
