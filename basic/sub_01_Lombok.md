@@ -1,34 +1,12 @@
-## Lombok
+# Lombok
 
 Lombok 은 컴파일 시 흔하게 작성하는 기능(코드)를 완성해주는 라이브러리입니다.
 
 Spring에서 Model(DTO, VO, DAO) Object를 만들 때 유용하게 사용되며 반복되는 코드를 어노테이션을 통해 줄여줍니다.
 
-#### -Maven
-
-```xml
-        <!-- Lombok 사용을 위한 dependency 추가 -->
-        <dependency>
-        	<groupId>org.projectlombok</groupId>
-        	<artifactId>lombok</artifactId>
-        	<version>1.18.0</version>
-        	<scope>provided</scope>
-        </dependency>
-```
-
-롬복 라이브러리를 사용하기 위해서는 pom.xml에 dependency를 추가해야됩니다. (maven 기준)
-
 <br>
 
-#### -**Gradle**
-
-```gradle
-provided 'org.projectlombok:lombok:1.18.0'
-```
-
-build.gradle에 Dependency를 추가해야 됩니다.
-
-
+### Lombok Annotation 
 
 #### @Data
 
@@ -141,7 +119,7 @@ public class Member {
 
 #### @RequiredArgsConstructor / @NonNull
 
-@NonNull 어노테이션이 설정된 인스턴스 변수 또는 final 지시자로 선언된 인스턴수 변수를 파라미터로 받는 생성자를 작성해준다.
+@NonNull 어노테이션이 설정된 인스턴스 변수 또는 **final 지시자로 선언된 인스턴수 변수**를 파라미터로 받는 생성자를 작성해준다.
 
 ```java
 package com.lombok.test;
@@ -180,3 +158,81 @@ public class Member {
 ```
 
 <img src="https://user-images.githubusercontent.com/59816811/103990608-dbf33d80-51d4-11eb-821e-c1b25b8fd0c6.png" alt="20210108_170212"/>
+
+<br>
+
+#### @NoArgsConstructor
+
+파라미터가 없는 생성자를 만들어주는 어노테이션입니다.
+
+```java
+package com.lombok.test;
+
+import lombok.AllArgsConstructor;
+
+@NoArgsConstructor
+public class Member {
+	private int age;
+	private String name;
+}
+
+```
+
+<br>
+
+> **참고!**
+>
+> **Lombok 라이브러리를 사용할 때도 의존관계 주입을 생성자 주입으로 설정해주기 위해 보통 다음과 같이 이용한다.**
+>
+> **@Component**
+> **@RequiredArgsConstructor**
+> **public class OrderServiceImpl implements OrderService {**
+> 	**private final MemberRepository memberRepository;**
+> 	**private final DiscountPolicy discountPolicy;**
+> **}**
+>
+> **관계주입이 필요한 필드를 final 로 만들고 @RequiredArgsConstructor 어노테이션만 이용하면 생성자 주입을 이용할 수 있다.**
+
+<br>
+
+> **참고!**
+>
+> **생성메서드를 통해서 객체를 생성하도록 하고 싶으면 다음과 같이 @NoArgsConstructor 애노테이션을 이용할 수 있다**
+>
+> **@NoArgsConstructor(access = AccessLevel.PROTECTED)**
+> **public class Member {**
+>     **private int age;**
+>     **private String name;**
+> **}**
+>
+> **access 속성값으로 AccessLevel.PROTECTED 를 설정하면 Member 클래스, 혹은 상속하는 클래스 내에서만 파라미터 없는 생성자를 이용할 수 있으므로 외부에서 잘못된 방법으로 객체를 생성하는 것을 막을 수 있다.**
+
+<br>
+
+### +) Lombok Dependency 추가
+
+#### -Maven
+
+```xml
+        <!-- Lombok 사용을 위한 dependency 추가 -->
+        <dependency>
+        	<groupId>org.projectlombok</groupId>
+        	<artifactId>lombok</artifactId>
+        	<version>1.18.0</version>
+        	<scope>provided</scope>
+        </dependency>
+```
+
+롬복 라이브러리를 사용하기 위해서는 pom.xml에 dependency를 추가해야됩니다. (maven 기준)
+
+<br>
+
+#### -**Gradle**
+
+```gradle
+provided 'org.projectlombok:lombok:1.18.0'
+```
+
+build.gradle에 Dependency를 추가해야 됩니다.
+
+<br>
