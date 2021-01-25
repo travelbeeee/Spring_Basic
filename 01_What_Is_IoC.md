@@ -55,45 +55,13 @@ public class Member {
 
 ```java
 public interface MemberRepository {
- 	Member save(Member member);
- 	Optional<Member> findById(Long id);
- 	Optional<Member> findByName(String name);
- 	List<Member> findAll();
+    // ~~ 핵심 비지니스 로직 ~~
 }
 ```
 
 ```java
 public class MemoryMemberRepository implements MemberRepository {
-    private static Map<Long, Member> store = new HashMap<>();
-    private static long sequence = 0L;
-    
-    @Override
-    public Member save(Member member) {
-        member.setId(++sequence);
-        store.put(member.getId(), member);
-        return member;
-    }
-    
-    @Override
-    public Optional<Member> findById(Long id) {
-        return Optional.ofNullable(store.get(id));
-    }
-    
-    @Override
-    public List<Member> findAll() {
-        return new ArrayList<>(store.values());
-    }
-    
-    @Override
-    public Optional<Member> findByName(String name) {
-        return store.values().stream()
-            .filter(member -> member.getName().equals(name))
-            .findAny();
-    }
-    
-    public void clearStore() {
-        store.clear();
-    }
+    // ~~ 핵심 비지니스 로직 ~~
 }
 ```
 
@@ -105,8 +73,7 @@ public class MemoryMemberRepository implements MemberRepository {
 
 ```java
 public class MemberService {
-     private MemberRepository memberRepository = new
-    MemoryMemberRepository();
+     private MemberRepository memberRepository = new MemoryMemberRepository();
 }
 ```
 
@@ -143,17 +110,38 @@ private MemberRepository memberRepository;
 
 ### 5) IoC 
 
-**클라이언트가 직접 객체를 생성하는게 아니라, 객체의 생성 방법을 결정하고 그렇게 만들어진 객체를 돌려주는 일을 하는 오브젝트를 따로 만들어서 클라이언트가 자신이 사용할 오브젝트를 스스로 선택하지 않고, 생성하지도 않는다. 즉, 모든 제어 권한을 자신이 아닌 다른 대상에게 위임한다.**
+위의 똑같은 상황을 IoC 를 이용해서 해결해보겠습니다.
 
-####  **IoC ( Inversion Of Control )** 
+```java
+public class AppConfig {
 
-**다른 의미로 객체를 외부로부터 주입받는다고 해서 스프링에서는 DI (Dependency Injection) 이라고 부른다.**
+    public MemberService memberService() {
+   		return new MemberServiceImpl(memberRepository());
+    }
+    
+    public MemberRepository memberRepository() {
+    	return new MemoryMemberRepository();
+    }
+}
+```
 
-**위와 같은 일을 하는 오브젝트를 스프링에서는 팩토리 (factory) 라고 부르고 팩토리가 제어권을 가지고 만들고 관계를 부여하는 오브젝트를 빈(bean) 이라고 부른다.  다른 말로는 빈 팩토리(bean factory) 또는 IoC 컨테이너 또는 DI 컨테이너라고 부른다.**
+MemberService, MemberRepository 객체를 생성하고 어떤 의존 관계를 가지고 있는지 관리하는 AppConfig 클래스를 따로 만듭니다. AppConfig 오브젝트를 통해 MemberService 객체를 생성하고 사용하면 우리는 클라이언트가 직접 객체의 생성 방법을 결정할 필요 없이 다음과 같이 코드를 구현할 수 있습니다.
 
-**스프링 프레임워크에서 DI 를 지원해주기 때문에 우리는 좋은 객체 지향 프로그래밍이 가능하다.**
+```java
+public class MemberService {
+     private MemberRepository memberRepository;
+     
+     public MemberService(MemberRepository memberRepository){
+     	this.memberRepositry = memberRepository;
+     }
+}
+```
 
-<img src="https://user-images.githubusercontent.com/59816811/104285295-c04ea680-54f6-11eb-96be-7cdd3b2fc3d3.png" alt="pic1" width="500"/>
+즉, MemberService 에서 어떤 MemberRepository 구현체를 이용하는지 신경쓰지 않고 MemberRepository 라는 역할만을 신경쓸 수 있습니다. 
 
+<br>
 
+**좋은 객체 지향 설계를 위해 클라이언트가 직접 객체를 생성하는게 아니라, 객체의 생성 방법을 결정하고 그렇게 만들어진 객체를 돌려주는 일을 하는 오브젝트를 따로 만듭니다. 즉, 클라이언트가 자신이 사용할 오브젝트를 스스로 선택하지 않고, 생성하지도 않고 모든 제어 권한을 자신이 아닌 다른 대상에게 위임합니다.**
+
+**제어 권한을 다른 사람에게 위임한다고해서 Inversion of Control (IOC) 라고 불리고, 다른 의미로 객체를 외부로부터 주입받는다고 해서 스프링에서는 DI (Dependency Injection) 이라고도 부릅니다.**
 
