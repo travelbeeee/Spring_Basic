@@ -39,5 +39,19 @@
 - 주입할 빈이 중복되는 경우
 - 빈 모두 주입받기
 
+### 04_IoC-Container_Singleton
 
+- 싱글톤패턴이란 무엇인가
+- 싱글톤패턴 문제점
+- 싱글톤 컨테이너
+- 주의점
+
+### 05_IoC-Container_BeanLifeCycle
+
+- 빈 생명주기
+- 콜백 사용하기
+
+### 06_IoC-Container_BeanScope
+
+- 빈 스코프란 무엇인가.
 
