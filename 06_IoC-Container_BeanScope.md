@@ -36,6 +36,8 @@
 
 --> 의존 관계를 외부에서 주입(DI) 받는게 아니라 직접 필요한 의존 관계를 찾아야한다(DL).
 
+<br>
+
 #### 2-1) ObjectProvider 인터페이스
 
 지정한 빈을 컨테이너에서 대신 찾아주는 DL 서비스를 스프링에서는 `ObjectProvider` , `ObjectFactory` 인터페이스를 통해 제공해준다. 과거에는 `ObjectFactory` 인터페이스 하나만 있었는데 기능을 추가해서 `ObjectProvider` 인터페이스가 만들어졌다.
@@ -80,3 +82,23 @@ class SingletonBean{
 
 - 자바 표준에서 제공하는 인터페이스이고 딱 DL 정도의 기능만 제공해준다.
 - `javax.inject:javax.inejct:1` 라이브러리를 추가해야 사용할 수 있다.
+
+<br>
+
+#### 2-3) Scoped Proxy
+
+Proxy 를 이용해 가짜 프록시 클래스를 만들어서 문제를 해결할 수 있다.
+
+```java
+public class Singleton {
+    @Autowired
+    private PrototypeBean prototypeBean;
+}
+
+@Component
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class PrototypeBean {
+
+}
+
+```

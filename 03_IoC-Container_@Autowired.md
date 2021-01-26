@@ -349,7 +349,7 @@ public class FixDiscountPolicy implements DiscountPolicy {}
 
 ### 5) 빈 모두 주입받기
 
-조회한 빈이 모두 필요하면 List, Map 자료구조를 이용하면 됩니다.
+조회한 빈이 모두 필요하면 List, Map 자료구조를 이	용하면 됩니다.
 
 예를 들어, DiscountPolicy 가 RateDiscountPolicy, FixDiscountPolicy 2개로 나뉘어져 있는 상황에서 둘 다 이용하려면 다음과 같이 구현하면 된다.
 
