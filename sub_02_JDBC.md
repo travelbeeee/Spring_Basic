@@ -52,7 +52,7 @@ Statement 객체들은 다음과 같은 3개의 메소드를 가지고 있다.
 
 ##### execute 메소드
 
-execute 메소드는 모든 유형의 SQL 문장과 함께 사용할 수 있으며 boolean 값을 반환합니다. 반환값이 true이면 getResultSet 메소드를 사용해 결과 집합을 얻을 수 있고, false 라면 업데이트 개수 또는 결과	ㄱ 없는 경우입니다.
+execute 메소드는 모든 유형의 SQL 문장과 함께 사용할 수 있으며 boolean 값을 반환합니다. 반환값이 true이면 getResultSet 메소드를 사용해 결과 집합을 얻을 수 있고, false 라면 업데이트 개수 또는 결과가 없는 경우입니다.
 
 ```java
 public boolean execute(String sql) throws SQLException;
