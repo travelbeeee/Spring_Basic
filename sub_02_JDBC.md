@@ -78,7 +78,7 @@ Select 쿼리를 날릴 때 사용하는 메소드로 데이터 결과 집합을
 public ResultSet executeQuery(String sql) throws SQLException;
 ```
 
-
+<br>
 
 #### 4) 자원해제
 
