@@ -25,7 +25,7 @@ public class Member {
 
 ```
 
-@Data 어노테이션을 Member 객체에 추가하면 다음과 같이 메소드들이 자동으로 생긴다.
+@Data 어노테이션을 Member 객체에 추가하면 다음과 같이 메소드들이 자동으로 생긴다. getter, setter, equals, hashCode, toString, constructor 까지 생긴 것을 확인할 수 있다.
 
 <img src="https://user-images.githubusercontent.com/59816811/103989272-cda42200-51d2-11eb-8759-c8d298b88d16.png" alt="20210108_165829"/>
 
