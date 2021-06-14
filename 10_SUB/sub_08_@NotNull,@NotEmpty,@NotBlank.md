@@ -55,3 +55,4 @@ public @interface NotBlank
 `The annotated element must not be null and must contain at least one non-whitespace character. Accepts CharSequence.`
 
 `CharSequence` 타입에 대해서만 지원하고, null 이거나 "" 이거나 " " 3가지 경우는 안된다.
+
