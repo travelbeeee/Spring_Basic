@@ -51,7 +51,7 @@ ApplicationContext를 구현한 Spring Container 에 Bean을 등록하는 방법
 
 IoC 컨테이너가 관리하는 Bean으로 등록하기 위해서는 적절한 메타정보를 알려줘야하는데, 반드시 들어가야하는 메타 정보는 **"클래스이름"** 과 **"빈의 이름"** 입니다. **빈의 이름은 명시하지 않는 경우 클래스 이름에서 첫 글자를 소문자로 바꿔서 사용하게 됩니다.**
 
-메타정보를 작성하는 방법은 크게 @Configuration, XML, @Configuration 등록 세 가지로 나뉩니다.
+메타정보를 작성하는 방법은 크게 @Configuration, XML, @ComponentScan 세 가지로 나뉩니다.
 
 <br>
 
@@ -100,7 +100,7 @@ AnnotationConfigApplicationContext 객체를 이용해서 Java class 파일 정�
 ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
 
-ApplicationContext 를 구현한 AnnotationConfigApplicationContext 가 스프링 컨테이너의 역할을 하게 됩니다.	
+ApplicationContext 를 구현한 AnnotationConfigApplicationContext 가 스프링 컨테이너의 역할을 하게 됩니다.
 
 <br>
 
@@ -149,7 +149,7 @@ ApplicationContext ctx = new ClassPathXmlApplicationContext("appConfig.xml");
 
   <br>
 
-#### 2-3) @Component
+#### 2-3) @ComponentScan / @Component
 
 XML과 @Configuration 방법은 Bean을 하나하나 다 등록해줘야하는 단점이 있습니다. 이를 Component-Scan을 이용하면 해결할 수 있습니다. @ComponentScan 애노테이션을 이용해도 되고 XML 파일에 <component-scan> 태그를 이용해도 됩니다.
 
@@ -169,7 +169,7 @@ public class AutoAppConfig{
 }
 ```
 
-@Component 애노테이션이 있으면 컴포넌트 스캔의 대상이 된다고 했다. 아래의 애노테이션들은 @Component 애노테이션을 확장한 애노테이션들로 @Component 애노테이션 보다는 상황에 맞는 애노테이션을 사용하는 것이 더 좋다.
+@Component 애노테이션이 있으면 컴포넌트 스캔의 대상이 된다고 했습니다. 아래의 애노테이션들은 @Component 애노테이션을 확장한 애노테이션들로 @Component 애노테이션 보다는 상황에 맞는 애노테이션을 사용하는 것이 더 좋습니다.
 
 - @Component : 컴포넌트 스캔의 대상으로 등록
 - @Controller : 스프링 MVC 컨트롤러에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다.

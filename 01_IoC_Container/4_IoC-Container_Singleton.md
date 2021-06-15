@@ -34,7 +34,7 @@ public class SingletonService {
     private static final SingletonService instance = new SingletonService();
 
     // 이미 static으로 만들어진 객체를 참조하는 것 말고는 사용 불가능!
-    public static  SingletonService getInstance(){
+    public static SingletonService getInstance(){
         return instance;
     }
 
@@ -93,9 +93,22 @@ public class AppConfig {
 
 <img src="https://user-images.githubusercontent.com/59816811/105666662-196a0180-5f1d-11eb-8721-a7a3a10cb675.png" alt="20210114_124921" width="500" />
 
-스프링 컨테이너에 @Configuration 어노테이션을 통해 AppConfig.class 를 등록하게 되면 AppConfig 클래스를 그대로 상속하면서 싱글톤이 보장되도록 확장된 **AppConfig@CGLIB 클래스가 새롭게 만들어지고** **스프링에서는 AppConfig 클래스가 아니라 AppConfig@CGLIB 클래스를 이용하게 된다.**
+스프링 컨테이너에 @Configuration 어노테이션을 통해 AppConfig.class 를 등록하게 되면 AppConfig 클래스도 스프링 빈으로 등록된다. 그리고 AppConfig 클래스를 그대로 상속하면서 싱글톤이 보장되도록 확장된 **AppConfig@CGLIB 클래스가 새롭게 만들어지고** **스프링에서는 AppConfig 클래스가 아니라 AppConfig@CGLIB 클래스를 이용하게 된다.**
 
-이를 통해 우리가 AppConfig.class 에서 @Configuration, @Bean 어노테이션만 사용한다면 싱글톤이 보장이 되는 것이다.
+AppConfig@CGLIB 클래스에서는 아래 코드와 같이 이미 스프링 컨테이너에 등록되어있는 빈은 찾아서 반환해주고 없다면 새롭게 만들어주면서 싱글톤으로 빈을 관리해준다.
+
+```java
+@Bean
+public MemberRepository memberRepository() {
+		if (memoryMemberRepository가 이미 스프링 컨테이너에 등록되어 있으면?) { 
+				return 스프링 컨테이너에서 찾아서 반환;
+		} else { //스프링 컨테이너에 없으면
+				기존 로직을 호출해서 MemoryMemberRepository를 생성하고 스프링 컨테이너에 등록 return 반환
+		}
+}
+```
+
+이를 통해 우리가 AppConfig.class 에서 @Configuration, @Bean 어노테이션만 사용한다면 싱글톤이 보장이 되는 것이다. 다른 방법으로 빈을 등록해도 마찬가지다.
 
 <br>
 
