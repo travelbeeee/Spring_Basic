@@ -1,6 +1,12 @@
 # EnvironmentCapable	
 
-02_IoC-Container_Bean 에서 Bean Factory에서 기능을 확장한 ApplicationContext 를 스프링 컨테이너라고 한다고 했습니다. 확장된 기능 중 하나인 EnvironmentCapable 에 대해서 정리해보겠습니다.
+스프링에서는 Bean Factory에서 기능을 확장해서 ApplicationContext 가 스프링 컨테이너 역할을 하고 있습니다. 
+
+확장된 기능 중 하나인 EnvironmentCapable 에 대해서 정리해보겠습니다.
+
+```java
+public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver { }
+```
 
 <br>
 
@@ -10,12 +16,10 @@
 
 ```java
 public interface EnvironmentCapable {
-
 	/**
 	 * Return the {@link Environment} associated with this component.
 	 */
 	Environment getEnvironment();
-
 }
 ```
 
@@ -56,6 +60,7 @@ spring:
 ```java
 @Component
 @Profiles("test")
+// @Profiles("!test") --> test Profile이 아닌 경우에 모두 적용
 ```
 
 프로파일 이름에는 `!(not)` , `&(and)`, `|(or)` 논리 연산자를 사용할 수 있습니다. 따라서, 여러 조건을 이용해서 사용해야 되는 환경을 지정해 줄 수 있습니다.
@@ -74,7 +79,7 @@ JVM 옵션으로도 설정할 수 있습니다. 여러 개의 프로파일을 �
 
 <br>
 
-#### 2-3)
+#### 2-3) 실습
 
 ```java
 @Component
@@ -167,4 +172,3 @@ my.name= travelbeeee
 
 // myproperties.properties
 ```
-
