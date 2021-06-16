@@ -43,6 +43,8 @@ BeanFactory 인터페이스를 보면 IoC 기술을 위한 대부분의 기능�
 - ResourceLoader
   - 파일, 클래스패스, 외부 등에서 리소스를 편리하게 조회하는 기능 제공
 
+다양한 기능들을 뒤에서 다시 정리해보겠습니다.
+
 <br>
 
 ### 2) 다양한 빈 설정 방법
@@ -206,7 +208,7 @@ public class MemberServiceImpl implements MemberService {
 }
 ```
 
-@Autowired 애노테이션을 이용하면 Component Scan 중에 자동으로 의존관계를 주입해줍니다. 물론 주입받은 MemberRepository 를 @Component 로 설정해놓아야 주입받을 수 있습니다. 
+@Autowired 애노테이션을 이용하면 Component Scan 중에 자동으로 의존관계를 주입해줍니다. 물론 주입받은 MemberRepository 를 빈으로(@Component) 설정해놓아야 주입받을 수 있습니다. 
 
 - @Component("name") 을 통해서 Bean의 이름을 지정할 수도 있습니다.
 
@@ -288,4 +290,69 @@ XML 파일을 이용하는 방법은 이용하지 않는 추세이고 @Component
 
 **--> @Component & @Configuration 방법을 이용하자!**
 
-<br> 
+### <br> 3) 빈 조회하기
+
+등록한 빈들을 모두 조회해보자.
+
+`ApplicationContext.getBeanDefinitionNames()` 메소드를 이용해서 등록된 모든 빈들의 이름을 받아올 수 있고, 이름을 이용해서 빈을 꺼내오면 된다.
+
+```java
+package travelbeeee.spring_core_concept.beanfind;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import travelbeeee.spring_core_concept.AppConfig;
+
+public class ApplicationContextInfoTest {
+
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+
+    @Test
+    @DisplayName("모든 빈 출력하기")
+    public void 모든_빈_출력하기() throws Exception{
+        String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
+        for (String beanName : beanDefinitionNames) {
+            Object bean = ctx.getBean(beanName);
+            System.out.println("bean.getClass() = " + bean.getClass());
+        }
+    }
+
+    @Test
+    @DisplayName("애플리케이션 빈 출력하기")
+    public void 애플리케이션_빈_출력하기() throws Exception{
+        String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
+        for (String beanName : beanDefinitionNames) {
+            BeanDefinition beanDefinition = ctx.getBeanDefinition(beanName);
+            if (beanDefinition.getRole() == BeanDefinition.ROLE_APPLICATION) {
+                Object bean = ctx.getBean(beanName);
+                System.out.println("bean.getClass() = " + bean.getClass());
+            }
+        }
+    }
+}
+
+// 모든 빈 출력하기
+bean.getClass() = class org.springframework.context.annotation.ConfigurationClassPostProcessor
+bean.getClass() = class org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
+bean.getClass() = class org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
+bean.getClass() = class org.springframework.context.event.EventListenerMethodProcessor
+bean.getClass() = class org.springframework.context.event.DefaultEventListenerFactory
+bean.getClass() = class travelbeeee.spring_core_concept.AppConfig$$EnhancerBySpringCGLIB$$10861418
+bean.getClass() = class travelbeeee.spring_core_concept.member.MemberServiceImpl
+bean.getClass() = class travelbeeee.spring_core_concept.order.OrderServiceImpl
+bean.getClass() = class travelbeeee.spring_core_concept.member.MemoryMemberRepository
+bean.getClass() = class travelbeeee.spring_core_concept.discount.RateDiscountPolicy
+    
+// 애플리케이션 빈 출력하기
+bean.getClass() = class travelbeeee.spring_core_concept.AppConfig$$EnhancerBySpringCGLIB$$10861418
+bean.getClass() = class travelbeeee.spring_core_concept.member.MemberServiceImpl
+bean.getClass() = class travelbeeee.spring_core_concept.order.OrderServiceImpl
+bean.getClass() = class travelbeeee.spring_core_concept.member.MemoryMemberRepository
+bean.getClass() = class travelbeeee.spring_core_concept.discount.RateDiscountPolicy
+```
+
+스프링에서 필요에 의해 자동으로 추가한 빈들과 내가 등록한 빈들이 모두 조회되는 것을 볼 수 있다. 애플리케이션 빈 출력을 위해서 `AnnotationContext` 인터페이스가 아닌 구현체를 받아왔다.
+
