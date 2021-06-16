@@ -35,7 +35,7 @@ BeanFactory 인터페이스를 보면 IoC 기술을 위한 대부분의 기능�
 ![spinrg2_1](https://user-images.githubusercontent.com/59816811/104418961-1dac2b80-55bb-11eb-810d-deb9aaa9d6f5.png)
 
 - MessageSource 인터페이스
-  - 메시지 소스를 활용한 국제화 기능 제공
+  - 메시지 소스를 활용한 국제화 기능 제공 (ex : 한국에서 들어오면 한국어로, 영어권에서 들어오면 영어로)
 - EnvironmentCapable
   - 로컬, 개발, 운영등을 구분해서 처리하는 환경변수 기능 제공
 - ApplicationEventPublisher
@@ -43,7 +43,7 @@ BeanFactory 인터페이스를 보면 IoC 기술을 위한 대부분의 기능�
 - ResourceLoader
   - 파일, 클래스패스, 외부 등에서 리소스를 편리하게 조회하는 기능 제공
 
-다양한 기능들을 뒤에서 다시 정리해보겠습니다.
+자세한 내용은 나중에 뒤에서 정리해보겠습니다.
 
 <br>
 
@@ -290,69 +290,49 @@ XML 파일을 이용하는 방법은 이용하지 않는 추세이고 @Component
 
 **--> @Component & @Configuration 방법을 이용하자!**
 
-### <br> 3) 빈 조회하기
+<br>
 
-등록한 빈들을 모두 조회해보자.
+### 3) BeanDefinition
 
-`ApplicationContext.getBeanDefinitionNames()` 메소드를 이용해서 등록된 모든 빈들의 이름을 받아올 수 있고, 이름을 이용해서 빈을 꺼내오면 된다.
+스프링은 다양한 방법으로 빈 메타정보를  통해 빈을 등록할 수 있습니다. 그럼, 스프링에서는 어떻게 다양한 메타정보를 이용한 빈 등록을 지원해줄 수 있을까요??
+
+![image](https://user-images.githubusercontent.com/59816811/122181670-89752600-cec4-11eb-89ca-2406894f00fa.png)
+
+스프링은 위의 그림처럼 다양한 메타 정보를 모두 `BeanDefinition` 인터페이스로 추상화시켜버립니다.
+
+![image](https://user-images.githubusercontent.com/59816811/122181869-b6293d80-cec4-11eb-954d-3680d832ff77.png)
+
+더 자세하게는 우리는 작성한 빈 설정 정보에 맞춰서 `AnnotationConfigApplicationContext` , `GenericXmlApplicationContext` 등의 구현체를 가지고 와서 스프링 컨테이너를 이용할 수 있었습니다. 이때, 각각의 구현체에서 설정 정보를 읽어서 `BeanDefinition` 이라는 빈 메타정보를 동일하게 생성해서 `ApplicationContext` 에게 알려줘서 다양한 방법으로 빈을 등록할 수 있습니다.
+
+ 스프링 컨테이너 입장에서는 설정 정보가 자바로 만들어진 클래스인지, XML 인지 상관없이 `BeanDefinition` 에만 의존하게됩니다. 즉, 역할과 구현을 잘 구분해서 스프링에서 잘 설계를 해놓았기 때문에 우리는 다양한 설정 방식을 이용할 수 있습니다.
 
 ```java
-package travelbeeee.spring_core_concept.beanfind;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import travelbeeee.spring_core_concept.AppConfig;
-
-public class ApplicationContextInfoTest {
-
-    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-
-    @Test
-    @DisplayName("모든 빈 출력하기")
-    public void 모든_빈_출력하기() throws Exception{
-        String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
-        for (String beanName : beanDefinitionNames) {
-            Object bean = ctx.getBean(beanName);
-            System.out.println("bean.getClass() = " + bean.getClass());
-        }
-    }
-
-    @Test
-    @DisplayName("애플리케이션 빈 출력하기")
-    public void 애플리케이션_빈_출력하기() throws Exception{
-        String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
-        for (String beanName : beanDefinitionNames) {
-            BeanDefinition beanDefinition = ctx.getBeanDefinition(beanName);
-            if (beanDefinition.getRole() == BeanDefinition.ROLE_APPLICATION) {
-                Object bean = ctx.getBean(beanName);
-                System.out.println("bean.getClass() = " + bean.getClass());
-            }
-        }
+@Test
+@DisplayName("빈 설정정보 출력하기")
+public void 빈_설정정보_출력하기() throws Exception{
+    String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
+    for (String beanDefinitionName : beanDefinitionNames) {
+        BeanDefinition beanDefinition = ctx.getBeanDefinition(beanDefinitionName);
+        System.out.println("beanDefinition = " + beanDefinition);
     }
 }
 
-// 모든 빈 출력하기
-bean.getClass() = class org.springframework.context.annotation.ConfigurationClassPostProcessor
-bean.getClass() = class org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
-bean.getClass() = class org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
-bean.getClass() = class org.springframework.context.event.EventListenerMethodProcessor
-bean.getClass() = class org.springframework.context.event.DefaultEventListenerFactory
-bean.getClass() = class travelbeeee.spring_core_concept.AppConfig$$EnhancerBySpringCGLIB$$10861418
-bean.getClass() = class travelbeeee.spring_core_concept.member.MemberServiceImpl
-bean.getClass() = class travelbeeee.spring_core_concept.order.OrderServiceImpl
-bean.getClass() = class travelbeeee.spring_core_concept.member.MemoryMemberRepository
-bean.getClass() = class travelbeeee.spring_core_concept.discount.RateDiscountPolicy
-    
-// 애플리케이션 빈 출력하기
-bean.getClass() = class travelbeeee.spring_core_concept.AppConfig$$EnhancerBySpringCGLIB$$10861418
-bean.getClass() = class travelbeeee.spring_core_concept.member.MemberServiceImpl
-bean.getClass() = class travelbeeee.spring_core_concept.order.OrderServiceImpl
-bean.getClass() = class travelbeeee.spring_core_concept.member.MemoryMemberRepository
-bean.getClass() = class travelbeeee.spring_core_concept.discount.RateDiscountPolicy
+// 출력이 길어서 MyAppConfig beanDeifinition 만 기술
+beanDefinition = Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=applicationContextInfoTest.MyAppConfig; factoryMethodName=bean2; initMethodName=null; destroyMethodName=(inferred); defined in travelbeeee.spring_core_concept.beanfind.ApplicationContextInfoTest$MyAppConfig
 ```
 
-스프링에서 필요에 의해 자동으로 추가한 빈들과 내가 등록한 빈들이 모두 조회되는 것을 볼 수 있다. 애플리케이션 빈 출력을 위해서 `AnnotationContext` 인터페이스가 아닌 구현체를 받아왔다.
+빈 설정정보를 실제로 출력해보면 다양한 빈의 설정 정보들이 담겨있는 것을 확인할 수 있습니다.
+
+- BeanClassName: 생성할 빈의 클래스 명(자바 설정 처럼 팩토리 역할의 빈을 사용하면 없음) 
+- factoryBeanName: 팩토리 역할의 빈을 사용할 경우 이름, 예) appConfig 
+- factoryMethodName: 빈을 생성할 팩토리 메서드 지정, 예) memberService 
+- Scope: 싱글톤(기본값) 
+- lazyInit: 스프링 컨테이너를 생성할 때 빈을 생성하는 것이 아니라, 실제 빈을 사용할 때 까지 최대한 생성을 지연처리 하는지 여부 
+- InitMethodName: 빈을 생성하고, 의존관계를 적용한 뒤에 호출되는 초기화 메서드 명 
+- DestroyMethodName: 빈의 생명주기가 끝나서 제거하기 직전에 호출되는 메서드 명 
+- Constructor arguments,  Properties: 의존관계 주입에서 사용한다. (자바 설정 처럼 팩토리 역할 의 빈을 사용하면 없음)
+
+스프링은 이 메타정보를 기반으로 빈을 생성하고 관리한다.
+
+> BeanDefinition 을 커스튬해서 직접 만들어 사용하면 내가 원하는 방법을 이용해 메타 설정 정보를 넘겨줄 수도 있다! ( 실제로는 사용할 일 거의 없음. )
 
