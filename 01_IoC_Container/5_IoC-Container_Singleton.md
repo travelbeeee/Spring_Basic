@@ -110,6 +110,10 @@ public MemberRepository memberRepository() {
 
 이를 통해 우리가 AppConfig.class 에서 @Configuration, @Bean 어노테이션만 사용한다면 싱글톤이 보장이 되는 것이다. 다른 방법으로 빈을 등록해도 마찬가지다.
 
+> 주의!!
+>
+> @Configuration 애노테이션 없이 Appconfig.class 를 빈 메타정보로 넘겨주면, 싱글톤이 보장이 되지않고, new Bean() 으로 객체를 직접 만드는 것과 동일하게 작동한다.
+
 <br>
 
 ### 4) 싱글톤 방식 주의점
