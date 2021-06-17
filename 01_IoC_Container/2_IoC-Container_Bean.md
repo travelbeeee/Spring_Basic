@@ -151,7 +151,7 @@ ApplicationContext ctx = new ClassPathXmlApplicationContext("appConfig.xml");
 
   <br>
 
-#### 2-3) @ComponentScan / @Component
+#### 2-3) @ComponentScan
 
 XML과 @Configuration 방법은 Bean을 하나하나 다 등록해줘야하는 단점이 있습니다. 이를 Component-Scan을 이용하면 해결할 수 있습니다. @ComponentScan 애노테이션을 이용해도 되고 XML 파일에 <component-scan> 태그를 이용해도 됩니다.
 
@@ -159,7 +159,11 @@ XML과 @Configuration 방법은 Bean을 하나하나 다 등록해줘야하는 �
 <context:component-scan base-package=""/>
 ```
 
-@ComponentScan 애노테이션을 이용하면 이름 그대로 @Component 로 등록된 클래스들을 찾아서 Scan을 합니다. 그리고 찾은 Component 들을 Bean으로 등록해줍니다.
+@ComponentScan 애노테이션을 이용하면 이름 그대로 @Component 로 등록된 클래스들을 찾아서 빈으로 등록해줍니다.
+
+> 실무에서는 스프링 빈이 수십, 수백 개가 필요하므로 XML과 @Configuration 을 통해 하나하나 등록해주는 과정은 비효율적!
+>
+> --> 스프링에서 제공해주는 컴포넌트 스캔 기능을 이용하자
 
 우리가 빈으로 등록을 원하는 클래스들에게는 @Component 애노테이션을 설정해주면 되고, 다음과 같이 @ComponentScan 애노테이션을 이용한 Bean 메타 정보를 담고 있는 @Configuration 클래스를 만들어 주면 됩니다.
 
@@ -167,15 +171,25 @@ XML과 @Configuration 방법은 Bean을 하나하나 다 등록해줘야하는 �
 @Configuration
 @ComponentScan
 public class AutoAppConfig{
-    
 }
+
+@Component
+public class MyBean{}
 ```
+
+마찬가지로 AnnotationConfigApplicationContext 구현체를 통해 스프링 컨테이너를 사용할 수 있습니다.
+
+```java
+ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+```
+
+##### 2-3-1) @Component
 
 @Component 애노테이션이 있으면 컴포넌트 스캔의 대상이 된다고 했습니다. 아래의 애노테이션들은 @Component 애노테이션을 확장한 애노테이션들로 @Component 애노테이션 보다는 상황에 맞는 애노테이션을 사용하는 것이 더 좋습니다.
 
 - @Component : 컴포넌트 스캔의 대상으로 등록
 - @Controller : 스프링 MVC 컨트롤러에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다.
-- @Service : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. ( 특별한 기능은 없지만 핵심 비지니스 로직이 있다는 뜻으로도 사용 )
+- @Service : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. ( 특별한 기능은 없지만 핵심 비지니스 로직이 있다는 뜻으로 사용 )
 - @Repository : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. 또, 스프링이 데이터 접근 계층으로 인식하고 데이터 계층의 예외를 스프링 예외로 변환해준다.
 - @Configuration : 스프링 설정 정보에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. 스프링이 싱글톤을 유지하도록 추가 처리를 한다.
 
@@ -190,7 +204,13 @@ public class MemoryMemberRepository implements MemberRepository {
 }
 ```
 
-스프링 컨테이너에 Bean으로 등록을 원하는 클래스들에 @Component 애노테이션을 붙여주면 됩니다.
+스프링 컨테이너에 Bean으로 등록을 원하는 클래스들에 @Component 애노테이션을 붙여주면 됩니다. 기본 전략은 클래스명의 맨 앞 글자를 소문자로 바꿔서 스프링 빈의 이름으로 사용합니다.
+
+또, @Component("name") 을 통해서 Bean의 이름을 지정할 수도 있습니다.
+
+<br>
+
+##### 2-3-2) 의존관계 주입
 
 그러면 의존관계 주입은 어떻게 되는걸까요??
 
@@ -210,77 +230,119 @@ public class MemberServiceImpl implements MemberService {
 
 @Autowired 애노테이션을 이용하면 Component Scan 중에 자동으로 의존관계를 주입해줍니다. 물론 주입받은 MemberRepository 를 빈으로(@Component) 설정해놓아야 주입받을 수 있습니다. 
 
-- @Component("name") 을 통해서 Bean의 이름을 지정할 수도 있습니다.
+<br>
 
-- ComponentScan 은 스캔 위치를 지정할 수 있습니다.
+##### 2-3-3) 스캔 범위 지정
 
-  모든 자바 클래스를 다 스캔하려면 시간이 오래걸리므로 스캔 위치를 다음과 같이 지정할 수 있습니다.
+또, ComponentScan 은 스캔 위치를 지정할 수 있습니다.
 
-  ```java
-  // 단일 지정
-  @ComponentScan(
-  	basePackages = "hello.core",
-  )
-  
-  // 복수 지정
-  @ComponentScan(
-  	basePackages = {"hello.core", "hello.core2"},
-  )
-  ```
+모든 자바 클래스를 다 스캔하려면 시간이 오래걸리므로 스캔 위치를 다음과 같이 지정할 수 있습니다.
 
-  hello.core 패키지 하위 자바 클래스를 다 컴포넌트 스캔 해달라는 뜻이고, Default 값으로는 @ComponentScan이 붙은 설정 정보 클래스의 패키지가 시작 위치가 됩니다.
+```java
+// 단일 지정
+@ComponentScan(
+	basePackages = "hello.core",
+)
 
-- ComponentScan 은 필터를 지정할 수 있습니다.
+// 복수 지정
+@ComponentScan(
+	basePackages = {"hello.core", "hello.core2"},
+)
+```
 
-  - includeFilters : 컴포넌트 스캔 대상을 추가로 지정
-  - excludeFilters : 컴포넌트 스캔 대상에서 제외
-
-  ```java
-  @Target(ElementType.TYPE)
-  @Retention(RetentionPolicy.RUNTIME)
-  @Documented
-  public @interface MyIncludeComponent {
-  }
-  ```
-
-  ```java
-  @Target(ElementType.TYPE)
-  @Retention(RetentionPolicy.RUNTIME)
-  @Documented
-  public @interface MyExcludeComponent {
-  }
-  ```
-
-  ```java
-  @Configuration
-  @ComponentScan(
-      includeFilters = @Filter(type = FilterType.ANNOTATION, classes =
-      MyIncludeComponent.class),
-      excludeFilters = @Filter(type = FilterType.ANNOTATION, classes =
-      MyExcludeComponent.class)
-  )
-  public class autoConfig{
-  
-  }
-  ```
-
-  위와 같이 커스텀 애노테이션을 만들어주고 @ComponentScan 의 includeFilters, excludeFilters 속성에 애노테이션을 지정해주면 @MyIncludeComponent 가 붙은 class는 빈으로 등록이 되고, @MyExcludeComponent 이 붙은 class는 빈에서 제외가 됩니다.
-
-  - FilterType 으로는 5가지 옵션이 있습니다.
-
-    - ANNOTATION : 기본값, 애노테이션을 인식해서 동작
-    - ASSIGNABLE_TYPE : 지정한 타입과 자식 타입을 인식해서 동작
-    - ASPECTJ : AspectJ 패턴 사용
-    - REGEX : 정규 표현식
-    - CUSTOM : TypeFilter 라는 인터페이스를 구현해서 처리
+hello.core 패키지 하위 자바 클래스를 다 컴포넌트 스캔 해달라는 뜻이고, **Default 값으로는 @ComponentScan이 붙은 설정 정보 클래스의 패키지가 시작 위치가 됩니다.**
 
 <br>
 
-마찬가지로 AnnotationConfigApplicationContext 구현체를 통해 스프링 컨테이너를 사용할 수 있습니다.
+##### 2-3-4) 스캔 필터
+
+ComponentScan 은 필터를 지정할 수 있습니다.
+
+- includeFilters : 컴포넌트 스캔 대상을 추가로 지정
+- excludeFilters : 컴포넌트 스캔 대상에서 제외
 
 ```java
-ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MyIncludeComponent {
+}
 ```
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MyExcludeComponent {
+}
+```
+
+```java
+@Configuration
+@ComponentScan(
+    includeFilters = @Filter(type = FilterType.ANNOTATION, classes = MyIncludeComponent.class),
+    excludeFilters = @Filter(type = FilterType.ANNOTATION, classes = MyExcludeComponent.class)
+)
+public class autoConfig{
+
+}
+```
+
+위와 같이 커스텀 애노테이션을 만들어주고 @ComponentScan 의 includeFilters, excludeFilters 속성에 애노테이션을 지정해주면 @MyIncludeComponent 가 붙은 class는 빈으로 등록이 되고, @MyExcludeComponent 이 붙은 class는 빈에서 제외가 됩니다.
+
+- FilterType 으로는 5가지 옵션이 있습니다.
+
+  - ANNOTATION : 기본값, 애노테이션을 인식해서 동작
+  - ASSIGNABLE_TYPE : 지정한 타입과 자식 타입을 인식해서 동작
+  - ASPECTJ : AspectJ 패턴 사용
+  - REGEX : 정규 표현식
+  - CUSTOM : TypeFilter 라는 인터페이스를 구현해서 처리
+
+<br>
+
+##### 2-3-5) 중복 등록
+
+컴포넌트 스캔에서 같은 빈 이름을 등록하면 어떻게 될까요??
+
+먼저, @Component 로 자동으로 등록되는 빈이 이름이 같으면 `ConflictingBeanDefinitionException` 에러가 발생합니다.
+
+그러면, 자동으로 등록되는 빈과 수동으로 등록되는 빈이 이름이 같으면 어떻게 될까요??
+
+```java
+@ComponentScan
+@Configuration
+class AutoConfig{
+	@Bean("beanA")
+	BeanA beanA(){
+		return new BeanA();
+	}
+}
+
+@Compoent
+class BeanA{}
+```
+
+스프링에서는 수동 빈이 우선권을 가지고 자동 빈을 오버라이드 해버립니다.
+
+```
+Overriding bean definition for bean 'beanA' with a different
+definition: replacing
+```
+
+하지만, 실무에서 빈의 이름이 겹치고 자동 빈 대신에 수동 빈을 쓰기 위해서 오버라이드를 의도해서 하는 경우는 없으므로 최신 스프링 부트에서는 수동 빈과 자동 빈의 이름이 같으면 에러를 발생시킵니다.
+
+```
+Consider renaming one of the beans or enabling overriding by setting
+spring.main.allow-bean-definition-overriding=true
+```
+
+<br>
+
+<br>
+
+> 스프링부트 팁!
+>
+> 스프링 부트에서는 @SpringBootApplication 애노테이션에 @ComponentScan 애노테이션이 포함되어있고, 스프링 부트에서 기본적으로 프로젝트 루트 패키지에 @SpringBootApplication 애노테이션이 붙은 클래스를 만들어준다. 따라서, @ComponentScan 애노테이션을 따로 사용하지 않고, 빈으로 등록을 원하는 클래스들만 애노테이션을 잘 붙여주면 스프링 부트에서 알아서 빈으로 등록하고 관리해준다.
 
 <br>
 

@@ -21,7 +21,7 @@
 
 그러면 어떻게 콜백을 사용할 수 있을까??
 
-<br> 
+<br>
 
 ### 2) 콜백 사용하기
 
@@ -66,7 +66,6 @@ public NetworkClient networkClient(){
 
 
 public class NetworkClient{
-    
     public void init() throws Exception 
         // 초기화 콜백
     }
@@ -86,6 +85,8 @@ public class NetworkClient{
 > 참고 ! 
 >
 > destryMethod 속성은 대부분의 라이브러리가 close, shutdown 이라는 이름의 종료 메서드를 사용하므로 기본값으로 close, shutdown 이름의 종료 메서드가 있으면 자동으로 사용해준다.
+>
+> 따라서, 스프링 빈으로 등록하면 종료 메서드는 따로 적어주지 않아도 잘 동작합니다.
 
 <br>
 

@@ -124,38 +124,39 @@ public class OrderServiceImpl implements OrderService {
 
 ```java
 @Component
-public class OrderServiceImpl implements OrderService {
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
+public class ParentBean {
+    private Bean1 bean1;
+    private Bean2 bean2;
     
     @Autowired
-    public void setMemberRepository(MemberRepository memberRepository) {
-    	this.memberRepository = memberRepository;
+    public void setBean1(Bean1 bean1) {
+    	this.bean1 = bean1;
     }
     @Autowired
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
-    	this.discountPolicy = discountPolicy;
+    public void setBean2(Bean2 bean2) {
+    	this.bean2 = bean2;
     }
     
-    // ~~ OrderServiceImpl 비지니스 로직 ~~
+    // ~~ 비지니스 로직 ~~
 }
 ```
 
-Test 코드에서 위의 OrderServiceImpl 을 사용한다고 가정하자. 생성자 주입이 아니라 setter 주입으로 OrderServiceImpl 클래스의 의존관계를 설정해주었다.
+Test 코드에서 위의  ParentBean 을 사용한다고 가정하자. 생성자 주입이 아니라 setter 주입으로 ParentBean 클래스의 의존관계를 설정해주었다.
 
 ```java
 @Test
-void createOrder() {
-    OrderServiceImpl orderService = new OrderServiceImpl();
-    orderService.createOrder(1L, "itemA", 10000);
+void test() {
+    ParentBean parentBean = new ParentBean();
 }
 ```
 
-**위처럼 프레임워크 없이 순수한 자바 코드로만 테스트를 수행하면 new 키워드를 이용해서 orderServiceImpl 객체에 의존 관계 주입을 하지 않고도 생성할 수 있다.**
+**위처럼 프레임워크 없이 순수한 자바 코드로만 테스트를 수행하면 new 키워드를 이용해서 ParentBean 객체에 의존 관계 주입을 하지 않고도 생성할 수 있다.**
 
 **하지만, 막상 실행해보면 Null Point Exception 에러가 발생한다.**
 
 **생성자 주입으로 작성하면 실행 전에 컴파일에서 오류가 발생하므로 IDE 에서 바로 어떤 값을 주입해야하는지 알 수 있다.**
+
+**또, 생성자 주입을 사용해야 final 키워드를 이용할 수 있어 컴파일 단위에서 오류를 잡을 수 있다.**
 
 <br>
 
@@ -165,16 +166,16 @@ void createOrder() {
 
 #### 3-1) @Autowired(required=false)
 
-Default 값은 true로 되어있고, false로 변경해주면 자동 주입할 대상이 없으면 호출이 안된다.
+Default 값은 true로 되어있고, false로 변경해주면 자동 주입할 대상이 없으면 수정자 메소드 자체가 호출이 안된다.
 
 ```java
-public class MemberServiceImpl implements  MemberService{
+public class NoBeanTest {
 
-    private MemberRepository memberRepository;
+    private NoBean noBean;
 
     @Autowired(required=false)
-    public MemberServiceImpl(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public NoBeanTest(NoBean noBean) {
+        this.noBean = noBean;
     }
 }
 
@@ -187,16 +188,15 @@ public class MemberServiceImpl implements  MemberService{
 자동 주입할 대상이 없으면 null 을 주입해준다.
 
 ```java
-public class MemberServiceImpl implements  MemberService{
+public class NoBeanTest {
 
-    private MemberRepository memberRepository;
+    private NoBean noBean;
 
     @Autowired
-    public MemberServiceImpl(@Nullable MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public NoBeanTest(@Nullable NoBean noBean) {
+        this.noBean = noBean;
     }
 }
-
 ```
 
 <br>
@@ -206,16 +206,15 @@ public class MemberServiceImpl implements  MemberService{
 자동 주입할 대상이 없으면 Optional.empty 를 주입해준다.
 
 ```java
-public class MemberServiceImpl implements  MemberService{
+public class NoBeanTest {
 
-    private MemberRepository memberRepository;
+    private NoBean noBean;
 
-    @Autowired(required=false)
-    public MemberServiceImpl(Optional<MemberRepository> memberRepository) {
-        this.memberRepository = memberRepository;
+    @Autowired
+    public NoBeanTest(Optional<NoBean> noBean) {
+        this.noBean = noBean;
     }
 }
-
 ```
 
 <br>
@@ -258,6 +257,8 @@ public class OrderServiceImpl implements OrderService{
 > 주의 ! 
 >
 > 필드명 매칭은 타입 매칭을 시도 하고 그 결과에 빈이 여러 개 있을 때 추가로 동작하는 기능.
+>
+> --> 3_IoC-Container_Bean 에서 정리한 빈 조회와 동일하게 동작한다.
 
 <br>
 
@@ -284,6 +285,10 @@ public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDisco
 ```
 
 자동주입 시에 @Qualifier 를 붙여주고 등록한 이름을 적어주면 중복 빈 문제를 해결할 수 있다.
+
+만약에 @Qualifier("추가구분자") 에서 "추가구분자" 에 해당하는 빈이 없다면 어떻게 될까?? 추가구분자를 이름으로 가지는 빈을 추가로 찾는다. 그러고도 없으면 에러를 발생한다.
+
+--> 추가구분자를 이름으로 가지는 빈을 찾기 전에 정확하게 매칭시키자!
 
 > 스프링은 기본적으로 빈으로 등록할 때, 클래스 이름의 앞 글자를 소문자로 바꾸어서 빈 이름으로 등록합니다. 따라서 RateDiscountPolicy 클래스에서 @Qualifier를 통한 이름을 설정하지않고도,  @Qualifier("rateDiscountPolicy") 로 주입받아도 된다.
 
