@@ -55,7 +55,7 @@ spring:
 
 #### 2-1) @Profile
 
-`@Profile` 애노테이션을 이용하면  빈에 프로파일에서만 생성되도록 할 수 있다.
+`@Profile` 애노테이션을 이용하면 빈에 어떤 프로파일에서 빈을 사용할지 지정할 수 있습니다.
 
 ```java
 @Component
@@ -71,7 +71,9 @@ spring:
 
 특정 프로파일에 정의된 빈을 사용하려면 해당 프로파일을 활성 프로파일로 설정해줘야합니다.
 
-JVM 옵션으로도 설정할 수 있습니다. 여러 개의 프로파일을 활성화 할 수도 있습니다.
+JVM 옵션으로 설정할 수 있습니다. 또, 여러 개의 프로파일을 활성화 할 수도 있습니다.
+
+![image](https://user-images.githubusercontent.com/59816811/122521799-37610b80-d050-11eb-8d33-67f2ce07e2c5.png)
 
 ```properties
 -Dspring.profiles.active=test
@@ -172,3 +174,11 @@ my.name= travelbeeee
 
 // myproperties.properties
 ```
+
+> 스프링 부트에서는 @Value 애노테이션을 통해 접근 가능하도록 편하게 도와준다.
+>
+> ```java
+> @Value("${my.name}")
+> String myname;
+> ```
+
