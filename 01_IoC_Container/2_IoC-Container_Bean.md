@@ -96,13 +96,13 @@ public class AppConfig {
 - @Bean으로 등록된 메서드의 return 객체를 Bean으로 등록합니다.
 - @Bean("name")으로 이름을 지정할 수 있습니다. 이름을 지정하지 않을 시에는 메소드 명이 이름이 됩니다.
 
-AnnotationConfigApplicationContext 객체를 이용해서 Java class 파일 정보를 넘기면 스프링 컨테이너에 Java Class 파일에 담겨있는 Bean 정보들이 등록이 됩니다.
+`AnnotationConfigApplicationContext` 객체를 이용해서 Java class 파일 정보를 넘기면 스프링 컨테이너에 Java Class 파일에 담겨있는 Bean 정보들이 등록이 됩니다.
 
 ```java
 ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
 
-ApplicationContext 를 구현한 AnnotationConfigApplicationContext 가 스프링 컨테이너의 역할을 하게 됩니다.
+`ApplicationContext` 를 구현한 `AnnotationConfigApplicationContext` 가 스프링 컨테이너의 역할을 하게 됩니다.
 
 <br>
 
@@ -142,7 +142,7 @@ XML 파일을 이용해서 Spring Container 에게 빈에 관한 정보를 알�
   - ref 는 다른 빈으로 등록이 되어있는 빈의 id를 설정해줘야한다.
 - <property> 태그는 setter를 통해서 의존 관계까 있는 Bean을 주입할 때 사용
 
-다음과 같이 GenericXmlApplicationContext 객체를 이용해서 xml 설정 파일을 넘기면 스프링 컨테이너를 사용할 수 있다.
+다음과 같이 `GenericXmlApplicationContext` 구현체 혹은 `ClassPathXmlApplicatoinContext` 를 이용해서 xml 설정 파일을 넘기면 스프링 컨테이너를 사용할 수 있다.
 
 ```java
 ApplicationContext ctx = new GenericXmlApplicationContext("appConfig.xml");
@@ -163,7 +163,7 @@ XML과 @Configuration 방법은 Bean을 하나하나 다 등록해줘야하는 �
 
 > 실무에서는 스프링 빈이 수십, 수백 개가 필요하므로 XML과 @Configuration 을 통해 하나하나 등록해주는 과정은 비효율적!
 >
-> --> 스프링에서 제공해주는 컴포넌트 스캔 기능을 이용하자
+> --> 스프링에서 제공해주는 컴포넌트 스캔 기능을 이용하자	
 
 우리가 빈으로 등록을 원하는 클래스들에게는 @Component 애노테이션을 설정해주면 되고, 다음과 같이 @ComponentScan 애노테이션을 이용한 Bean 메타 정보를 담고 있는 @Configuration 클래스를 만들어 주면 됩니다.
 
@@ -364,7 +364,7 @@ XML 파일을 이용하는 방법은 이용하지 않는 추세이고 @Component
 
 ![image](https://user-images.githubusercontent.com/59816811/122181869-b6293d80-cec4-11eb-954d-3680d832ff77.png)
 
-더 자세하게는 우리는 작성한 빈 설정 정보에 맞춰서 `AnnotationConfigApplicationContext` , `GenericXmlApplicationContext` 등의 구현체를 가지고 와서 스프링 컨테이너를 이용할 수 있었습니다. 이때, 각각의 구현체에서 설정 정보를 읽어서 `BeanDefinition` 이라는 빈 메타정보를 동일하게 생성해서 `ApplicationContext` 에게 알려줘서 다양한 방법으로 빈을 등록할 수 있습니다.
+​	우리는 작성한 빈 설정 정보에 맞춰서 `AnnotationConfigApplicationContext` , `GenericXmlApplicationContext` 등의 구현체를 가지고 와서 스프링 컨테이너를 이용할 수 있었습니다. 이때, 각각의 구현체에서 설정 정보를 읽어서 `BeanDefinition` 이라는 빈 메타정보를 동일하게 생성해서 `ApplicationContext` 에게 알려줘서 다양한 방법으로 빈을 등록할 수 있습니다.
 
  스프링 컨테이너 입장에서는 설정 정보가 자바로 만들어진 클래스인지, XML 인지 상관없이 `BeanDefinition` 에만 의존하게됩니다. 즉, 역할과 구현을 잘 구분해서 스프링에서 잘 설계를 해놓았기 때문에 우리는 다양한 설정 방식을 이용할 수 있습니다.
 
