@@ -180,7 +180,7 @@ public class MyBean{}
 마찬가지로 AnnotationConfigApplicationContext 구현체를 통해 스프링 컨테이너를 사용할 수 있습니다.
 
 ```java
-ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AutoAppConfig.class);
 ```
 
 ##### 2-3-1) @Component
@@ -190,7 +190,7 @@ ApplicationContext applicationContext = new AnnotationConfigApplicationContext(A
 - @Component : 컴포넌트 스캔의 대상으로 등록
 - @Controller : 스프링 MVC 컨트롤러에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다.
 - @Service : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. ( 특별한 기능은 없지만 핵심 비지니스 로직이 있다는 뜻으로 사용 )
-- @Repository : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. 또, 스프링이 데이터 접근 계층으로 인식하고 데이터 계층의 예외를 스프링 예외로 변환해준다.
+- @Repository : 스프링 비지니스 로직에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. **또, 스프링이 데이터 접근 계층으로 인식하고 데이터 계층의 예외를 스프링 예외로 변환해준다.**
 - @Configuration : 스프링 설정 정보에서 사용하는 애노테이션으로 @Component 애노테이션을 내포하고 있다. 스프링이 싱글톤을 유지하도록 추가 처리를 한다.
 
 <br>
@@ -204,7 +204,7 @@ public class MemoryMemberRepository implements MemberRepository {
 }
 ```
 
-스프링 컨테이너에 Bean으로 등록을 원하는 클래스들에 @Component 애노테이션을 붙여주면 됩니다. 기본 전략은 클래스명의 맨 앞 글자를 소문자로 바꿔서 스프링 빈의 이름으로 사용합니다.
+**스프링 컨테이너에 Bean으로 등록을 원하는 클래스들에 @Component 애노테이션을 붙여주면 됩니다. 기본 전략은 클래스명의 맨 앞 글자를 소문자로 바꿔서 스프링 빈의 이름으로 사용합니다.**
 
 또, @Component("name") 을 통해서 Bean의 이름을 지정할 수도 있습니다.
 
@@ -284,7 +284,6 @@ public @interface MyExcludeComponent {
     excludeFilters = @Filter(type = FilterType.ANNOTATION, classes = MyExcludeComponent.class)
 )
 public class autoConfig{
-
 }
 ```
 
@@ -324,7 +323,7 @@ class BeanA{}
 
 스프링에서는 수동 빈이 우선권을 가지고 자동 빈을 오버라이드 해버립니다.
 
-```
+```tex
 Overriding bean definition for bean 'beanA' with a different
 definition: replacing
 ```
@@ -335,8 +334,6 @@ definition: replacing
 Consider renaming one of the beans or enabling overriding by setting
 spring.main.allow-bean-definition-overriding=true
 ```
-
-<br>
 
 <br>
 
