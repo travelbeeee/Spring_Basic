@@ -1,6 +1,6 @@
 # @Autowired
 
-앞에서 의존관계를 @Autowired 애노테이션을 이용해 자동 주입 할 수 있다고 했다.
+스프링에서는 @Autowired 애노테이션을 이용해 빈 의존 관계를 자동 주입을 받을 수 있습니다.
 
 자동주입하는 4가지 방법에 대해서 자세히 알아보자.
 
@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 }
 ```
 
-> @Autowired 가 없어도 생성자가 딱 1개만 있으면 자동으로 주입 된다. ( 스프링 빈에 한해서만 )
+> @Autowired 가 없어도 생성자가 딱 1개만 있으면 자동으로 주입 된다. ( 스프링 빈에 한해서만 )	
 
 <br>
 
@@ -78,11 +78,12 @@ public class OrderServiceImpl implements OrderService {
    	private MemberRepository memberRepository;
     @Autowired
    	private DiscountPolicy discountPolicy;
-    
 }
 ```
 
 테스트 코드에서는 사용해도 되지만 애플리케이션의 실제 코드로는 사용하지말자!!
+
+> 최근 스프링에서는 권장하지 않는 방식.
 
 <br>
 
@@ -162,7 +163,7 @@ void test() {
 
 ### 3) 주입할 빈이 없는 경우
 
-주입할 스프링 빈이 없으면 당연히 에러가 발생한다. 이때, 스프링 빈이 없어도 동작해야 하면 다음과 같은 설정을 이용할 수 있다.
+ 주입할 스프링 빈이 없으면 당연히 에러가 발생한다. 이때, 스프링 빈이 없어도 동작해야 하면 다음과 같은 설정을 이용할 수 있다.
 
 #### 3-1) @Autowired(required=false)
 
@@ -183,7 +184,7 @@ public class NoBeanTest {
 
 <br>
 
-#### 3-2) @Nullable 애노테이션
+#### 3-2) @Nullable
 
 자동 주입할 대상이 없으면 null 을 주입해준다.
 
@@ -229,7 +230,7 @@ DiscountPolicy Interface 가 있고, RateDiscountPolicy 구현체, FixDiscountPo
 
 #### 4-1) @Autowired 필드 명 매칭
 
-@Autowired 를 타입 매칭을 시도하고, 빈이 여러개 있으면 필드 이름, 파라미터 이름으로 빈 이름을 추가 매칭한다.
+@Autowired 는 빈 주입을 위해 타입 매칭을 시도하고, 같은 타입의 빈이 여러개 있으면 필드 이름, 파라미터 이름으로 빈 주입을 위한 추가 탐색을 진행합니다.
 
 ```java
 @Autowired
@@ -258,11 +259,10 @@ public class OrderServiceImpl implements OrderService{
 >
 > 필드명 매칭은 타입 매칭을 시도 하고 그 결과에 빈이 여러 개 있을 때 추가로 동작하는 기능.
 >
-> --> 3_IoC-Container_Bean 에서 정리한 빈 조회와 동일하게 동작한다.
 
 <br>
 
-### 4-2) @Qualifier
+#### 4-2) @Qualifier
 
 @Qualifier 애노테이션을 통해 추가 구분자를 붙여줄 수도 있다. 주입시 추가적인 방법을 제공하는 것이지 빈 이름을 변경하는 것은 아니다.
 
@@ -284,17 +284,15 @@ public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDisco
 }
 ```
 
-자동주입 시에 @Qualifier 를 붙여주고 등록한 이름을 적어주면 중복 빈 문제를 해결할 수 있다.
+ 자동주입 시에 @Qualifier 를 붙여주고 등록한 이름을 적어주면 중복 빈 문제를 해결할 수 있다. **먼저, @Qualifier("추가구분자")  애노테이션이 있는 빈을 찾고, 없다면 "추가구분자" 를 빈 이름으로 가지는 빈을 찾습니다. 그 후에도 없으면 에러를 발생합니다.**
 
-만약에 @Qualifier("추가구분자") 에서 "추가구분자" 에 해당하는 빈이 없다면 어떻게 될까?? 추가구분자를 이름으로 가지는 빈을 추가로 찾는다. 그러고도 없으면 에러를 발생한다.
+ 단순하게, @Quliaifer("추가구분자") 가 붙은 빈과 매칭해준다고 생각하는 것이 좋다.
 
---> 추가구분자를 이름으로 가지는 빈을 찾기 전에 정확하게 매칭시키자!
-
-> 스프링은 기본적으로 빈으로 등록할 때, 클래스 이름의 앞 글자를 소문자로 바꾸어서 빈 이름으로 등록합니다. 따라서 RateDiscountPolicy 클래스에서 @Qualifier를 통한 이름을 설정하지않고도,  @Qualifier("rateDiscountPolicy") 로 주입받아도 된다.
+> 스프링은 기본적으로 빈으로 등록할 때, 클래스 이름의 앞 글자를 소문자로 바꾸어서 빈 이름으로 등록합니다. 따라서 RateDiscountPolicy 클래스에서 @Qualifier를 통한 이름을 설정하지않고도,  @Qualifier("rateDiscountPolicy") 로 주입받아도 된다. 하지만, 이렇게 사용하게 되면 추후에 헷갈리므로 간단하게 @Qualifier("") 가 붙은 빈과 매칭해준다고 생각하고 개발을 진행하자. 
 
 <br>
 
-### 4-3) @Qualifier 단점 및 해결방안
+#### 4-3) @Qualifier 단점 및 해결방안
 
 @Qualifier 는 "mainDiscountPolicy" 처럼 문자를 적어준다. 따라서, 컴파일시 타입 체크가 안된다. 이를 해결하기 위해 애노테이션을 직접 만들어서 사용할 수도 있다.
 
@@ -325,7 +323,7 @@ public OrderServiceImpl(MemberRepository memberRepository,
 
 <br>
 
-### 4-4) @Primary
+#### 4-4) @Primary
 
 @Primary 애노테이션은 우선순위를 정하는 방법이다.
 
@@ -342,13 +340,13 @@ public class FixDiscountPolicy implements DiscountPolicy {}
 
 <br>
 
-### 4-5) @Primary vs @Qualifier
+#### 4-5) @Primary vs @Qualifier
 
 @Primary 는 자동으로 작동하고, @Qualifier 는 매칭되는 @Qualfiier 를 찾아서 수동으로 작동한다. 따라서, @Qualifier 가 우선 순위가 더 높다. 
 
 <br>
 
-### 4-6) @Primary, @Qualifier 활용
+#### 4-6) @Primary, @Qualifier 활용
 
 코드에서 자주 사용하는 메인 스프링 빈은 @Primary 를 적용해서 @Qualifier 지정 없이 편리하게 조회하고, 서브 스프링 빈을 획득할 때는 @Qualifier 를 지정해서 명시적으로 획득하는 방식으로 활용하면 코드를 깔끔하게 유지할 수 있다.
 
